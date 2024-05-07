@@ -1,0 +1,63 @@
+name: Build Angular frontend
+
+on:
+  workflow_dispatch:
+    inputs:
+      execute-manually:
+        description: 'Ejecutar manualmente el flujo de trabajo'
+        required: true
+        default: 'true'
+  push:
+    branches:
+      - main 
+      - dev
+      - 2-realizar-el-build-de-la-aplicación-angular
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js v20
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Verificar instalación de Node.js
+        run: node --version   
+        
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Angular app
+        run: npm run build
+
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    

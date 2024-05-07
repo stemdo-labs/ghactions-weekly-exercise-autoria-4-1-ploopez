@@ -1,0 +1,30 @@
+name: 'Get image tag'
+description: 'Get docker image tag from package.json'
+
+inputs:
+  target:
+    description: 'Environment type (dev or prod)'
+    required: true
+    default: 'dev'
+
+outputs:
+  tag:
+    description: 'Docker image tag extracted from package.json'
+    value: ${{ steps.get_image_tag.outputs.version }}
+
+runs: 
+  using: "composite"
+  steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Get Image Tag
+      id: get_image_tag
+      shell: bash
+      run: | 
+        version=$(jq -r .version package.json)
+        if [[ "${{ inputs.target }}" == "dev" ]]; then
+          version="${version}-snapshot"
+        fi
+        echo "version=${version}" >> "$GITHUB_OUTPUT"
+        echo $GITHUB_OUTPUT

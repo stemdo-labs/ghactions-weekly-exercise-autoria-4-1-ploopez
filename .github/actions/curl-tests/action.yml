@@ -1,0 +1,26 @@
+name: 'Curl tests'
+description: 'Execute curl to the port where nginx is listening'
+
+runs: 
+  using: "composite"
+  steps:
+    - name: Actualizar curl
+      shell: bash
+      run: sudo apt-get update && sudo apt-get install --only-upgrade curl -y
+
+    - name: Esperar unos segundos
+      shell: bash
+      run: |
+        echo "Haciendo cálculos..."
+        sleep 10
+
+    - name: Realizar solicitud HTTP con Curl
+      shell: bash
+      if: success()
+      run: |
+           curl -sSL http://localhost:8080 > response.html
+
+    - name: Mostrar HTML
+      shell: bash
+      if: success()
+      run: cat response.html

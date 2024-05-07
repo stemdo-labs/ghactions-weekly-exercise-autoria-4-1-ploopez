@@ -1,0 +1,26 @@
+name: 'Build and push'
+description: 'Build and push image to DockerHub with a tag'
+inputs:
+  docker_username: 
+    description: 'docker username' 
+    required: true
+  image_tag:
+      description: 'image-tag' 
+      required: true
+
+runs: 
+  using: "composite"
+  steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+    # Pull de la imagen
+    - name: Obtener imagen de Docker Hub
+      shell: bash 
+      run: docker pull ${{ inputs.docker_username }}/app:${{ inputs.image_tag }}
+    # Correr contenedor
+    - name: Ejecutar nuevo contenedor
+      shell: bash
+      id: Docker-Run
+      
+      run: |
+           docker run -d --name app -p 8080:8080 ${{ inputs.docker_username }}/app:${{ inputs.image_tag }}
