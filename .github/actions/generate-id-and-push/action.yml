@@ -24,7 +24,7 @@ runs:
         echo "${{ inputs.registry_password }}" | docker login -u "${{ inputs.registry_username }}" --password-stdin
 
     - name: Login to GitHub Container Registry
-      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      run: echo "${{ secrets.GIT_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       shell: bash
 
     - name: Build and push Docker image
