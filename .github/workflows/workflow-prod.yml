@@ -13,6 +13,8 @@ jobs:
     secrets: inherit
     with:
       target: prod
+    outputs:
+      artifact_id: ${{ steps.generate_and_push.outputs.artifact_id }}
 
   run_cd_prod:
     needs: run_ci_prod    
@@ -20,6 +22,7 @@ jobs:
     secrets: inherit
     with:
       target: prod
+      artifact_id: ${{ needs.run_ci_prod.outputs.artifact_id }}
         
 
       
