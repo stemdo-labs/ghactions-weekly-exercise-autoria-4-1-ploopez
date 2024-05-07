@@ -23,15 +23,12 @@ runs:
       run: |
         echo "${{ inputs.registry_password }}" | docker login -u "${{ inputs.registry_username }}" --password-stdin
 
-    - name: Build Docker Image
+    - name: Login to GitHub Container Registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       shell: bash
-      run:  |
-            - name: Build Docker Image
-  shell: bash
-  run:  |
-        docker buildx build -t "${{ inputs.registry_username }}/app:${{ steps.set_artifact_id.outputs.id }}" .
 
-    - name: Push to Github Artifactory
+    - name: Build and push Docker image
+      run: |
+        docker buildx build -t ghcr.io/${{ github.repository }}/app:${{ steps.set_artifact_id.outputs.id }} .
+        docker push ghcr.io/${{ github.repository }}/app:${{ steps.set_artifact_id.outputs.id }}
       shell: bash
-      run: docker push ${{ inputs.registry_username }}/my-image:${{ steps.set_artifact_id.outputs.id }}
-      
