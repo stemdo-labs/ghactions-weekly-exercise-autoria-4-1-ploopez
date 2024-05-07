@@ -1,0 +1,18 @@
+name: 'Build and push'
+description: 'Build and push image to DockerHub with a tag'
+inputs:
+  registry_username: 
+    description: 'username registry' 
+    required: true
+  image_tag:
+      description: 'image-tag' 
+      required: true
+
+runs: 
+  using: "composite"
+  steps:
+    - name: Build and Push Image
+      shell: bash
+      run: |
+        docker build -t ${{ inputs.registry_username }}/app:${{ inputs.image_tag }} .
+        docker push ${{ inputs.registry_username }}/app:${{ inputs.image_tag }}

@@ -1,0 +1,47 @@
+name: CI (Entorno Dev)
+
+on:
+  workflow_call:
+    inputs:
+      target: 
+        type: string 
+        required: true
+ 
+
+jobs:
+  get_image:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.get_tag.outputs.tag }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Use Set Image Tag Action
+        uses: ./.github/actions/get-image-tag
+        id: get_tag
+        with:
+          target: ${{ inputs.target }}
+
+  build_and_push:
+    needs: get_image
+    runs-on: ubuntu-latest
+    environment: target
+   
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Login to Registry
+        uses: ./.github/actions/login-Registry
+        with:
+          registry_username: ${{ secrets.REGISTRY_USERNAME }}
+          registry_password: ${{ secrets.REGISTRY_PASSWORD }}
+
+     
+
+      - name: Build and Push Image
+        uses: ./.github/actions/build-and-push-image
+        with:
+          registry_username: ${{ secrets.DOCKER_USERNAME }}
+          image_tag: ${{ needs.get_image.outputs.tag }}
