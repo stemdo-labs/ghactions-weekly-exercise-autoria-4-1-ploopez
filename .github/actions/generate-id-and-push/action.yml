@@ -15,7 +15,7 @@ runs:
   steps:
     - name: Generate Artifact ID
       id: set_artifact_id
-      run: echo "::set-output name=id::$(date '+%Y%m%d%H%M%S')"
+      run: echo "id=$(date '+%Y%m%d%H%M%S')" >> $GITHUB_ENV
       shell: bash
 
     - name: Login to Registry
