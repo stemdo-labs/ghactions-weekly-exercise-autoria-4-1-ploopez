@@ -24,6 +24,7 @@ runs:
         echo "${{ inputs.registry_password }}" | docker login -u "${{ inputs.registry_username }}" --password-stdin
 
     - name: Build Docker Image
+      shell: bash
       run: docker build -t ${{ inputs.registry_username }}/my-image:${{ steps.set_artifact_id.outputs.id }} .
 
     - name: Push to Github Artifactory
