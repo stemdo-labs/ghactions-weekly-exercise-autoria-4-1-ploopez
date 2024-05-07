@@ -32,16 +32,29 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      - name: Generate Artifact ID
+        id: set_artifact_id
+        run: echo "::set-output name=id::$(date '+%Y%m%d%H%M%S')"
+
       - name: Login to Registry
         uses: ./.github/actions/login-Registry
         with:
           registry_username: ${{ secrets.REGISTRY_USERNAME }}
           registry_password: ${{ secrets.REGISTRY_PASSWORD }}
 
-     
+      - name: Generate ID and Push to Artifactory
+        uses: ./.github/actions/generate-id-and-push
+        id: generate_and_push
+        with:
+          registry_username: ${{ secrets.REGISTRY_USERNAME }}
+          registry_password: ${{ secrets.REGISTRY_PASSWORD }}
+        
 
       - name: Build and Push Image
         uses: ./.github/actions/build-and-push-image
         with:
           registry_username: ${{ secrets.DOCKER_USERNAME }}
           image_tag: ${{ needs.get_image.outputs.tag }}
+    
+    outputs:
+      artifact_id: ${{ steps.generate_and_push.outputs.artifact_id }}

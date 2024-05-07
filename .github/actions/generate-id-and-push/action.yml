@@ -1,0 +1,27 @@
+name: 'Generate ID and Push to Artifactory'
+description: 'Generates an artifact ID and pushes the image to Github Artifactory'
+inputs:
+  registry_username:
+    description: 'The username for the registry'
+    required: true
+  registry_password:
+    description: 'The password for the registry'
+    required: true
+outputs:
+  artifact_id:
+    description: 'The generated artifact ID'
+runs:
+  using: 'composite'
+  steps:
+    - name: Generate Artifact ID
+      id: set_artifact_id
+      run: echo "::set-output name=id::$(date '+%Y%m%d%H%M%S')"
+      shell: bash
+
+    - name: Login to Registry
+      run: echo ${{ inputs.registry_password }} | docker login -u ${{ inputs.registry_username }} --password-stdin
+      shell: bash
+
+    - name: Push to Github Artifactory
+      run: docker push ${{ inputs.registry_username }}/my-image:${{ steps.set_artifact_id.outputs.id }}
+      shell: bash

@@ -6,6 +6,9 @@ on:
     target: 
       type: string 
       required: true
+    artifact_id:
+        type: string
+        required: true  
 
 jobs:
   get_image:
